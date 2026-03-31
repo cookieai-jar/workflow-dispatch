@@ -61,8 +61,9 @@ export class WorkflowHandler {
     try {
       const workflowId = await this.getWorkflowId()
       this.triggerDate = new Date().setMilliseconds(0)
+      const encodedWorkflowId = encodeURIComponent(workflowId)
       const dispatchResp = await this.octokit.request(
-        `POST /repos/${this.owner}/${this.repo}/actions/workflows/${workflowId}/dispatches`,
+        `POST /repos/${this.owner}/${this.repo}/actions/workflows/${encodedWorkflowId}/dispatches`,
         {
           ref: this.ref,
           inputs,
