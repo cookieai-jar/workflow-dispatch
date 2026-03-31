@@ -45,6 +45,7 @@ export interface WorkflowRunResult {
 export class WorkflowHandler {
   private workflowId?: number | string
   private workflowRunId?: number
+  private workflowRunUrl?: string
   private triggerDate = 0
 
   constructor(
@@ -60,18 +61,32 @@ export class WorkflowHandler {
     try {
       const workflowId = await this.getWorkflowId()
       this.triggerDate = new Date().setMilliseconds(0)
-      const dispatchResp = await this.octokit.rest.actions.createWorkflowDispatch({
-        owner: this.owner,
-        repo: this.repo,
-        workflow_id: workflowId,
-        ref: this.ref,
-        inputs
-      })
+      const encodedWorkflowId = encodeURIComponent(workflowId)
+      const dispatchResp = await this.octokit.request(
+        `POST /repos/${this.owner}/${this.repo}/actions/workflows/${encodedWorkflowId}/dispatches`,
+        {
+          ref: this.ref,
+          inputs,
+          return_run_details: true,
+        }
+      )
       debug('Workflow Dispatch', dispatchResp)
+
+      // If the API returned run details, cache the run ID and URL immediately
+      if (dispatchResp.data?.workflow_run_id) {
+        this.workflowRunId = dispatchResp.data.workflow_run_id
+        this.workflowRunUrl = dispatchResp.data.html_url
+        core.info(`Run ID: ${this.workflowRunId}`)
+        core.info(`Run URL: ${this.workflowRunUrl}`)
+      }
     } catch (error: any) {
       debug('Workflow Dispatch error', error.message)
       throw error
     }
+  }
+
+  getWorkflowRunUrl(): string | undefined {
+    return this.workflowRunUrl
   }
 
   async getWorkflowRunStatus(): Promise<WorkflowRunResult> {

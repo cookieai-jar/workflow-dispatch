@@ -25172,23 +25172,35 @@ var WorkflowHandler = class {
   }
   workflowId;
   workflowRunId;
+  workflowRunUrl;
   triggerDate = 0;
   async triggerWorkflow(inputs) {
     try {
       const workflowId = await this.getWorkflowId();
       this.triggerDate = (/* @__PURE__ */ new Date()).setMilliseconds(0);
-      const dispatchResp = await this.octokit.rest.actions.createWorkflowDispatch({
-        owner: this.owner,
-        repo: this.repo,
-        workflow_id: workflowId,
-        ref: this.ref,
-        inputs
-      });
+      const encodedWorkflowId = encodeURIComponent(workflowId);
+      const dispatchResp = await this.octokit.request(
+        `POST /repos/${this.owner}/${this.repo}/actions/workflows/${encodedWorkflowId}/dispatches`,
+        {
+          ref: this.ref,
+          inputs,
+          return_run_details: true
+        }
+      );
       debug2("Workflow Dispatch", dispatchResp);
+      if (dispatchResp.data?.workflow_run_id) {
+        this.workflowRunId = dispatchResp.data.workflow_run_id;
+        this.workflowRunUrl = dispatchResp.data.html_url;
+        info(`Run ID: ${this.workflowRunId}`);
+        info(`Run URL: ${this.workflowRunUrl}`);
+      }
     } catch (error2) {
       debug2("Workflow Dispatch error", error2.message);
       throw error2;
     }
+  }
+  getWorkflowRunUrl() {
+    return this.workflowRunUrl;
   }
   async getWorkflowRunStatus() {
     try {
@@ -25507,7 +25519,10 @@ async function run() {
     await workflowHandler.triggerWorkflow(args.inputs);
     info("Workflow triggered \u{1F680}");
     if (args.displayWorkflowUrl) {
-      const url = await getFollowUrl(workflowHandler, args.displayWorkflowUrlInterval, args.displayWorkflowUrlTimeout);
+      let url = workflowHandler.getWorkflowRunUrl();
+      if (!url) {
+        url = await getFollowUrl(workflowHandler, args.displayWorkflowUrlInterval, args.displayWorkflowUrlTimeout);
+      }
       info(`You can follow the running workflow here: ${url}`);
       setOutput("workflow-url", url);
     }
