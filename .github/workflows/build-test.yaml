@@ -63,13 +63,25 @@ jobs:
         token: ${{ secrets.PERSONAL_TOKEN }}
         wait-for-completion: false
 
-    # - name: Invoke echo 1 workflow by id
-    #   uses: ./
-    #   with:
-    #     workflow: '1854247'
-    #     token: ${{ secrets.PERSONAL_TOKEN }}
-    #     inputs: '{"message": "Mango jam"}'
-    #     wait-for-completion: false
+  echo-path-test:
+    needs: [build]
+    runs-on: ubuntu-latest
+    name: "echo-path-test [trigger|by workflow full path]"
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v6
+    - name: Download dist
+      uses: actions/download-artifact@v8
+      with:
+        name: build
+        path: dist
+    - name: Invoke echo 1 workflow by full path
+      uses: ./
+      with:
+        workflow: .github/workflows/echo-1.yaml
+        token: ${{ secrets.PERSONAL_TOKEN }}
+        inputs: '{"message": "path-based dispatch test"}'
+        wait-for-completion: false
 
   long-running-test:
     needs: [build]
@@ -267,6 +279,7 @@ jobs:
     needs:
       - echo-1-test
       - echo-2-test
+      - echo-path-test
       - long-running-test
       - failing-test
       - timeout-test
