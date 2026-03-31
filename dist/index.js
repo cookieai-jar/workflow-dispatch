@@ -25280,13 +25280,14 @@ var WorkflowHandler = class {
       return this.workflowId;
     }
     try {
-      const workflowsResp = await this.octokit.rest.actions.listRepoWorkflows({
-        owner: this.owner,
-        repo: this.repo
-      });
-      const workflows = workflowsResp.data.workflows;
+      const workflows = await this.octokit.paginate(
+        this.octokit.rest.actions.listRepoWorkflows,
+        { owner: this.owner, repo: this.repo }
+      );
       debug2("List Workflows", workflows);
-      const workflowFind = workflows.find((workflow) => workflow.name === this.workflowRef || workflow.id.toString() === this.workflowRef);
+      const workflowFind = workflows.find(
+        (workflow) => workflow.name === this.workflowRef || workflow.id.toString() === this.workflowRef || workflow.path.endsWith(`/${this.workflowRef}`) || workflow.path === this.workflowRef
+      );
       if (!workflowFind) throw new Error(`Unable to find workflow '${this.workflowRef}' in ${this.owner}/${this.repo} \u{1F625}`);
       debug(`Workflow id is: ${workflowFind.id}`);
       this.workflowId = workflowFind.id;

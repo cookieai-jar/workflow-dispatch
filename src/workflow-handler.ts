@@ -179,15 +179,19 @@ export class WorkflowHandler {
       return this.workflowId
     }
     try {
-      const workflowsResp = await this.octokit.rest.actions.listRepoWorkflows({
-        owner: this.owner,
-        repo: this.repo
-      })
-      const workflows = workflowsResp.data.workflows
+      const workflows = await this.octokit.paginate(
+        this.octokit.rest.actions.listRepoWorkflows,
+        { owner: this.owner, repo: this.repo }
+      )
       debug('List Workflows', workflows)
 
-      // Locate workflow either by name or id
-      const workflowFind = workflows.find((workflow: any) => workflow.name === this.workflowRef || workflow.id.toString() === this.workflowRef)
+      // Locate workflow by name, id, path suffix, or exact path
+      const workflowFind = workflows.find((workflow: any) =>
+        workflow.name === this.workflowRef ||
+        workflow.id.toString() === this.workflowRef ||
+        workflow.path.endsWith(`/${this.workflowRef}`) ||
+        workflow.path === this.workflowRef
+      )
       if(!workflowFind) throw new Error(`Unable to find workflow '${this.workflowRef}' in ${this.owner}/${this.repo} 😥`)
       core.debug(`Workflow id is: ${workflowFind.id}`)
       this.workflowId = workflowFind.id as number
