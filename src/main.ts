@@ -147,6 +147,10 @@ async function run(): Promise<void> {
     computeConclusion(start, args.waitForCompletionTimeout, result)
 
   } catch (error: any) {
+    if (error.message?.endsWith('a disabled workflow')) {
+      core.warning('Workflow is disabled, no action was taken')
+      return
+    }
     core.setFailed(error.message)
   }
 }

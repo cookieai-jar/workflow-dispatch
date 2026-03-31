@@ -25536,6 +25536,10 @@ async function run() {
     setOutput("workflow-url", result?.url);
     computeConclusion(start, args.waitForCompletionTimeout, result);
   } catch (error2) {
+    if (error2.message?.endsWith("a disabled workflow")) {
+      warning("Workflow is disabled, no action was taken");
+      return;
+    }
     setFailed(error2.message);
   }
 }
