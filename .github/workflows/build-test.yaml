@@ -14,11 +14,10 @@ jobs:
     - uses: actions/setup-node@v6
       with:
         node-version: '24'
-    - name: Build with ncc
+    - name: Build with esbuild
       run: |
-        npm install -g yarn
-        yarn install
-        yarn run build
+        npm install
+        npm run build
     - name: Archive dist
       uses: actions/upload-artifact@v7
       with:
