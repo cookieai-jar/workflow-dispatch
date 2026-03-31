@@ -17,16 +17,16 @@
   "author": "Aurélien Baudet",
   "license": "MIT",
   "devDependencies": {
-    "@actions/core": "1.10.1",
-    "@actions/github": "6.0.0",
-    "@typescript-eslint/eslint-plugin": "7.7.0",
-    "@typescript-eslint/parser": "7.7.0",
+    "@actions/core": "^3.0.0",
+    "@actions/github": "^9.0.0",
+    "@eslint/js": "^10.0.1",
     "esbuild": "^0.25.0",
-    "eslint": "8.57.0",
-    "typescript": "5.4.5"
+    "eslint": "^10.1.0",
+    "typescript": "^6.0.2",
+    "typescript-eslint": "^8.58.0"
   },
   "dependencies": {
-    "@octokit/auth-app": "^7.1.4",
-    "@octokit/rest": "^21.1.0"
+    "@octokit/auth-app": "^8.2.0",
+    "@octokit/rest": "^22.0.1"
   }
 }
