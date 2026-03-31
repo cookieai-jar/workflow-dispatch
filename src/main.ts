@@ -124,7 +124,11 @@ async function run(): Promise<void> {
     core.info('Workflow triggered 🚀')
 
     if (args.displayWorkflowUrl) {
-      const url = await getFollowUrl(workflowHandler, args.displayWorkflowUrlInterval, args.displayWorkflowUrlTimeout)
+      // Use the immediate URL from return_run_details if available, otherwise poll
+      let url = workflowHandler.getWorkflowRunUrl()
+      if (!url) {
+        url = await getFollowUrl(workflowHandler, args.displayWorkflowUrlInterval, args.displayWorkflowUrlTimeout)
+      }
       core.info(`You can follow the running workflow here: ${url}`)
       core.setOutput('workflow-url', url)
     }
