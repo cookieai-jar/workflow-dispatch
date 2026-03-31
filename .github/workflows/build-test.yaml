@@ -95,11 +95,11 @@ jobs:
         display-workflow-run-url-interval: 10s
         display-workflow-run-url-timeout: 5m
       continue-on-error: true
-    - uses: nick-invision/assert-action@v3
+    - uses: nick-invision/assert-action@v3.0.0
       with:
         expected: success
         actual: ${{ steps.long-running-workflow.outputs.workflow-conclusion }}
-    - uses: nick-invision/assert-action@v3
+    - uses: nick-invision/assert-action@v3.0.0
       with:
         expected: success
         actual: ${{ steps.long-running-workflow.outcome }}
@@ -128,11 +128,11 @@ jobs:
         display-workflow-run-url-timeout: 60s
       continue-on-error: true
     - run: echo "worflow-conclusion=${{ steps.failing-workflow.outputs.workflow-conclusion }}"
-    - uses: nick-invision/assert-action@v3
+    - uses: nick-invision/assert-action@v3.0.0
       with:
         expected: failure
         actual: ${{ steps.failing-workflow.outputs.workflow-conclusion }}
-    - uses: nick-invision/assert-action@v3
+    - uses: nick-invision/assert-action@v3.0.0
       with:
         expected: failure
         actual: ${{ steps.failing-workflow.outcome }}
@@ -160,11 +160,11 @@ jobs:
         display-workflow-run-url-interval: 10s
         display-workflow-run-url-timeout: 30s
       continue-on-error: true
-    - uses: nick-invision/assert-action@v3
+    - uses: nick-invision/assert-action@v3.0.0
       with:
         expected: timed_out
         actual: ${{ steps.timeout-workflow.outputs.workflow-conclusion }}
-    - uses: nick-invision/assert-action@v3
+    - uses: nick-invision/assert-action@v3.0.0
       with:
         expected: failure
         actual: ${{ steps.timeout-workflow.outcome }}
@@ -193,11 +193,11 @@ jobs:
         display-workflow-run-url-timeout: 120s
         workflow-logs: print
       continue-on-error: true
-    - uses: nick-invision/assert-action@v3
+    - uses: nick-invision/assert-action@v3.0.0
       with:
         expected: timed_out
         actual: ${{ steps.print-workflow-logs.outputs.workflow-conclusion }}
-    - uses: nick-invision/assert-action@v3
+    - uses: nick-invision/assert-action@v3.0.0
       with:
         expected: failure
         actual: ${{ steps.print-workflow-logs.outcome }}
@@ -249,15 +249,15 @@ jobs:
               "environment": "${{ matrix.environment }}"
             }
         continue-on-error: true
-      - uses: nick-invision/assert-action@v3
+      - uses: nick-invision/assert-action@v3.0.0
         with:
           expected: success
           actual: ${{ steps.named-run-workflow.outputs.workflow-conclusion }}
-      - uses: nick-invision/assert-action@v3
+      - uses: nick-invision/assert-action@v3.0.0
         with:
           expected: success
           actual: ${{ steps.named-run-workflow.outcome }}
-      - uses: nick-invision/assert-action@v3
+      - uses: nick-invision/assert-action@v3.0.0
         env:
           EXPECTED_LOG_MESSAGE: "### Env: ${{ matrix.environment }} ###"
         with:
