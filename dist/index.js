@@ -25058,7 +25058,7 @@ function getArgs() {
     throw new Error("Either token or app-id and app-private-key must be provided");
   }
   const workflowRef = getInput("workflow");
-  const ref = getInput("ref") || context2.ref;
+  const ref = getInput("ref");
   const [owner, repo] = getInput("repo") ? getInput("repo").split("/") : [context2.repo.owner, context2.repo.repo];
   const inputs = parse2(getInput("inputs"));
   const displayWorkflowUrlStr = getInput("display-workflow-run-url");
