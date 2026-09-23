@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
     - name: Check out repository
       uses: actions/checkout@v6
@@ -26,7 +26,7 @@ jobs:
 
   echo-1-test:
     needs: [build]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     name: "echo-1-test [trigger|by workflow name]"
     steps:
     - name: Check out repository
@@ -46,7 +46,7 @@ jobs:
 
   echo-2-test:
     needs: [build]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     name: "echo-2-test [trigger|by workflow filename]"
     steps:
     - name: Check out repository
@@ -65,7 +65,7 @@ jobs:
 
   echo-path-test:
     needs: [build]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     name: "echo-path-test [trigger|by workflow full path]"
     steps:
     - name: Check out repository
@@ -85,7 +85,7 @@ jobs:
 
   long-running-test:
     needs: [build]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     name: "long-running-test [trigger+wait|by workflow filename|shoud succeed]"
     steps:
     - name: Check out repository
@@ -117,7 +117,7 @@ jobs:
 
   failing-test:
     needs: [build]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     name: "failing-test [trigger+wait|by workflow filename|should report failure]"
     steps:
     - name: Check out repository
@@ -150,7 +150,7 @@ jobs:
 
   timeout-test:
     needs: [build]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     name: "timeout-test [trigger+wait|by workflow filename|should report timed_out]"
     steps:
     - name: Check out repository
@@ -182,7 +182,7 @@ jobs:
 
   print-workflow-logs-test:
     needs: [build]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     name: "print-workflow-logs-test [trigger+wait|by workflow filename|print logs|should report timed_out]"
     steps:
     - name: Check out repository
@@ -224,7 +224,7 @@ jobs:
 
   parallel-runs-test:
     needs: [build]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     name: "parallel-runs-test [trigger+wait|by workflow filename|should succeed]"
     strategy:
       fail-fast: false
@@ -285,7 +285,7 @@ jobs:
       - timeout-test
       - print-workflow-logs-test
       - parallel-runs-test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
     - name: Check out repository
       uses: actions/checkout@v6
