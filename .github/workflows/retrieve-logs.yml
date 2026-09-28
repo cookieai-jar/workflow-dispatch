@@ -5,7 +5,7 @@ on:
 
 jobs:
   echo:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Echo message
         run: |
@@ -16,13 +16,13 @@ jobs:
           done
 
   timeout:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Sleep
         run: sleep 1200s
 
   more-real-example:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
     - uses: actions/setup-node@v6
       with:
