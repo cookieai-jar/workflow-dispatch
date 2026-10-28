@@ -4,7 +4,9 @@ import { debug } from './debug'
 
 interface JobInfo {
   name: string,
-  id: number
+  id: number,
+  status?: string,
+  conclusion?: string | null
 }
 
 
@@ -28,6 +30,10 @@ export async function handleWorkflowLogsPerJob(octokit: Octokit, args: any, work
   await handler.handleJobList(response.data.jobs)
 
   for (const job of response.data.jobs) {
+    // Skipped jobs never ran, so they have no logs to download.
+    if (job.conclusion === 'skipped') {
+      continue
+    }
     try {
       const jobLog = await octokit.rest.actions.downloadJobLogsForWorkflowRun({
         owner: owner,
@@ -71,7 +77,7 @@ class PrintLogsHandler implements WorkflowLogHandler {
   }
 
   async handleError(job: JobInfo, error: Error): Promise<void> {
-    core.warning(escapeImportedLogs(error.message))
+    core.warning(escapeImportedLogs(logDownloadError(job, error)))
   }
 }
 
@@ -87,7 +93,7 @@ class OutputLogsHandler implements WorkflowLogHandler {
   }
 
   async handleError(job: JobInfo, error: Error): Promise<void> {
-    core.warning(escapeImportedLogs(error.message))
+    core.warning(escapeImportedLogs(logDownloadError(job, error)))
   }
 
   getJsonLogs(): string {
@@ -137,4 +143,9 @@ function logHandlerFactory(mode: string): WorkflowLogHandler | null {
 function escapeImportedLogs(str: string): string {
   return str.replace(/^/mg, '| ')
     .replace(/##\[([^\]]+)\]/gm, '##<$1>')
+}
+
+function logDownloadError(job: JobInfo, error: Error): string {
+  const state = job.conclusion ?? job.status ?? 'unknown'
+  return `Could not download logs for job '${job.name}' (${state}): ${error.message}`
 }

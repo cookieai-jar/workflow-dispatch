@@ -25341,6 +25341,9 @@ async function handleWorkflowLogsPerJob(octokit, args, workflowRunId) {
   });
   await handler2.handleJobList(response.data.jobs);
   for (const job of response.data.jobs) {
+    if (job.conclusion === "skipped") {
+      continue;
+    }
     try {
       const jobLog = await octokit.rest.actions.downloadJobLogsForWorkflowRun({
         owner,
@@ -25373,7 +25376,7 @@ var PrintLogsHandler = class {
     endGroup();
   }
   async handleError(job, error2) {
-    warning(escapeImportedLogs(error2.message));
+    warning(escapeImportedLogs(logDownloadError(job, error2)));
   }
 };
 var OutputLogsHandler = class {
@@ -25385,7 +25388,7 @@ var OutputLogsHandler = class {
     this.logs.set(job.name, logs);
   }
   async handleError(job, error2) {
-    warning(escapeImportedLogs(error2.message));
+    warning(escapeImportedLogs(logDownloadError(job, error2)));
   }
   getJsonLogs() {
     const result = {};
@@ -25429,6 +25432,10 @@ function logHandlerFactory(mode) {
 }
 function escapeImportedLogs(str) {
   return str.replace(/^/mg, "| ").replace(/##\[([^\]]+)\]/gm, "##<$1>");
+}
+function logDownloadError(job, error2) {
+  const state = job.conclusion ?? job.status ?? "unknown";
+  return `Could not download logs for job '${job.name}' (${state}): ${error2.message}`;
 }
 
 // src/main.ts
