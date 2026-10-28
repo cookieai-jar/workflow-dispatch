@@ -10,8 +10,8 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
     - name: Check out repository
-      uses: actions/checkout@v6
-    - uses: actions/setup-node@v6
+      uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+    - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
       with:
         node-version: '24'
     - name: Build with esbuild
@@ -19,7 +19,7 @@ jobs:
         npm install
         npm run build
     - name: Archive dist
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
       with:
         name: build
         path: dist
@@ -30,9 +30,9 @@ jobs:
     name: "echo-1-test [trigger|by workflow name]"
     steps:
     - name: Check out repository
-      uses: actions/checkout@v6
+      uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
     - name: Download dist
-      uses: actions/download-artifact@v8
+      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
       with:
         name: build
         path: dist
@@ -50,9 +50,9 @@ jobs:
     name: "echo-2-test [trigger|by workflow filename]"
     steps:
     - name: Check out repository
-      uses: actions/checkout@v6
+      uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
     - name: Download dist
-      uses: actions/download-artifact@v8
+      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
       with:
         name: build
         path: dist
@@ -69,9 +69,9 @@ jobs:
     name: "echo-path-test [trigger|by workflow full path]"
     steps:
     - name: Check out repository
-      uses: actions/checkout@v6
+      uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
     - name: Download dist
-      uses: actions/download-artifact@v8
+      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
       with:
         name: build
         path: dist
@@ -89,9 +89,9 @@ jobs:
     name: "long-running-test [trigger+wait|by workflow filename|shoud succeed]"
     steps:
     - name: Check out repository
-      uses: actions/checkout@v6
+      uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
     - name: Download dist
-      uses: actions/download-artifact@v8
+      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
       with:
         name: build
         path: dist
@@ -106,11 +106,11 @@ jobs:
         display-workflow-run-url-interval: 10s
         display-workflow-run-url-timeout: 5m
       continue-on-error: true
-    - uses: nick-invision/assert-action@v3.0.0
+    - uses: nick-invision/assert-action@22dd2a66ef733fe92022d3704183ac007463eecb # v3.0.0
       with:
         expected: success
         actual: ${{ steps.long-running-workflow.outputs.workflow-conclusion }}
-    - uses: nick-invision/assert-action@v3.0.0
+    - uses: nick-invision/assert-action@22dd2a66ef733fe92022d3704183ac007463eecb # v3.0.0
       with:
         expected: success
         actual: ${{ steps.long-running-workflow.outcome }}
@@ -121,9 +121,9 @@ jobs:
     name: "failing-test [trigger+wait|by workflow filename|should report failure]"
     steps:
     - name: Check out repository
-      uses: actions/checkout@v6
+      uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
     - name: Download dist
-      uses: actions/download-artifact@v8
+      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
       with:
         name: build
         path: dist
@@ -139,11 +139,11 @@ jobs:
         display-workflow-run-url-timeout: 60s
       continue-on-error: true
     - run: echo "worflow-conclusion=${{ steps.failing-workflow.outputs.workflow-conclusion }}"
-    - uses: nick-invision/assert-action@v3.0.0
+    - uses: nick-invision/assert-action@22dd2a66ef733fe92022d3704183ac007463eecb # v3.0.0
       with:
         expected: failure
         actual: ${{ steps.failing-workflow.outputs.workflow-conclusion }}
-    - uses: nick-invision/assert-action@v3.0.0
+    - uses: nick-invision/assert-action@22dd2a66ef733fe92022d3704183ac007463eecb # v3.0.0
       with:
         expected: failure
         actual: ${{ steps.failing-workflow.outcome }}
@@ -154,9 +154,9 @@ jobs:
     name: "timeout-test [trigger+wait|by workflow filename|should report timed_out]"
     steps:
     - name: Check out repository
-      uses: actions/checkout@v6
+      uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
     - name: Download dist
-      uses: actions/download-artifact@v8
+      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
       with:
         name: build
         path: dist
@@ -171,11 +171,11 @@ jobs:
         display-workflow-run-url-interval: 10s
         display-workflow-run-url-timeout: 30s
       continue-on-error: true
-    - uses: nick-invision/assert-action@v3.0.0
+    - uses: nick-invision/assert-action@22dd2a66ef733fe92022d3704183ac007463eecb # v3.0.0
       with:
         expected: timed_out
         actual: ${{ steps.timeout-workflow.outputs.workflow-conclusion }}
-    - uses: nick-invision/assert-action@v3.0.0
+    - uses: nick-invision/assert-action@22dd2a66ef733fe92022d3704183ac007463eecb # v3.0.0
       with:
         expected: failure
         actual: ${{ steps.timeout-workflow.outcome }}
@@ -186,9 +186,9 @@ jobs:
     name: "print-workflow-logs-test [trigger+wait|by workflow filename|print logs|should report timed_out]"
     steps:
     - name: Check out repository
-      uses: actions/checkout@v6
+      uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
     - name: Download dist
-      uses: actions/download-artifact@v8
+      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
       with:
         name: build
         path: dist
@@ -204,11 +204,11 @@ jobs:
         display-workflow-run-url-timeout: 120s
         workflow-logs: print
       continue-on-error: true
-    - uses: nick-invision/assert-action@v3.0.0
+    - uses: nick-invision/assert-action@22dd2a66ef733fe92022d3704183ac007463eecb # v3.0.0
       with:
         expected: timed_out
         actual: ${{ steps.print-workflow-logs.outputs.workflow-conclusion }}
-    - uses: nick-invision/assert-action@v3.0.0
+    - uses: nick-invision/assert-action@22dd2a66ef733fe92022d3704183ac007463eecb # v3.0.0
       with:
         expected: failure
         actual: ${{ steps.print-workflow-logs.outcome }}
@@ -236,9 +236,9 @@ jobs:
       RUN_NAME: ${{ github.repository }}/actions/runs/${{ github.run_id }}/envs/${{ matrix.environment }}
     steps:
       - name: Check out repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
       - name: Download dist
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: build
           path: dist
@@ -260,15 +260,15 @@ jobs:
               "environment": "${{ matrix.environment }}"
             }
         continue-on-error: true
-      - uses: nick-invision/assert-action@v3.0.0
+      - uses: nick-invision/assert-action@22dd2a66ef733fe92022d3704183ac007463eecb # v3.0.0
         with:
           expected: success
           actual: ${{ steps.named-run-workflow.outputs.workflow-conclusion }}
-      - uses: nick-invision/assert-action@v3.0.0
+      - uses: nick-invision/assert-action@22dd2a66ef733fe92022d3704183ac007463eecb # v3.0.0
         with:
           expected: success
           actual: ${{ steps.named-run-workflow.outcome }}
-      - uses: nick-invision/assert-action@v3.0.0
+      - uses: nick-invision/assert-action@22dd2a66ef733fe92022d3704183ac007463eecb # v3.0.0
         env:
           EXPECTED_LOG_MESSAGE: "### Env: ${{ matrix.environment }} ###"
         with:
@@ -288,14 +288,14 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
     - name: Check out repository
-      uses: actions/checkout@v6
+      uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
     - name: Download dist
-      uses: actions/download-artifact@v8
+      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
       with:
         name: build
         path: dist
     - name: Update repo with build
-      uses: mikeal/publish-to-github-action@master
+      uses: mikeal/publish-to-github-action@e5a27bbb5174edae8930d2250fc98a3a32478f81 # master
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

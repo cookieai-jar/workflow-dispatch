@@ -25183,8 +25183,7 @@ var WorkflowHandler = class {
         `POST /repos/${this.owner}/${this.repo}/actions/workflows/${encodedWorkflowId}/dispatches`,
         {
           ref: this.ref,
-          inputs,
-          return_run_details: true
+          inputs
         }
       );
       debug2("Workflow Dispatch", dispatchResp);
@@ -25490,11 +25489,18 @@ async function handleLogs(octokit, args, workflowHandler) {
     error(`Failed to handle logs of triggered workflow. Cause: ${e}`);
   }
 }
+var API_VERSION = "2026-03-10";
+function withApiVersion(octokit) {
+  octokit.hook.before("request", (options) => {
+    options.headers["x-github-api-version"] = API_VERSION;
+  });
+  return octokit;
+}
 async function setupOctokit(token, appId, appPrivateKey) {
   if (token) {
-    return new Octokit2({
+    return withApiVersion(new Octokit2({
       auth: token
-    });
+    }));
   }
   return setupGitHubAppOctokit(appId, appPrivateKey);
 }
@@ -25506,10 +25512,10 @@ async function setupGitHubAppOctokitClient(appId, privateKey, installationId) {
   if (installationId) {
     auth6.installationId = installationId;
   }
-  return new Octokit2({
+  return withApiVersion(new Octokit2({
     authStrategy: createAppAuth,
     auth: auth6
-  });
+  }));
 }
 async function setupGitHubAppOctokit(appId, privateKey) {
   const octokit = await setupGitHubAppOctokitClient(appId, privateKey);

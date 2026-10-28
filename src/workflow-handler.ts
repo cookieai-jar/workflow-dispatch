@@ -67,12 +67,11 @@ export class WorkflowHandler {
         {
           ref: this.ref,
           inputs,
-          return_run_details: true,
         }
       )
       debug('Workflow Dispatch', dispatchResp)
 
-      // If the API returned run details, cache the run ID and URL immediately
+      // API version 2026-03-10 always returns the run details; cache them so no run lookup is needed
       if (dispatchResp.data?.workflow_run_id) {
         this.workflowRunId = dispatchResp.data.workflow_run_id
         this.workflowRunUrl = dispatchResp.data.html_url
