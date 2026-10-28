@@ -70,11 +70,22 @@ async function handleLogs(octokit: Octokit, args: any, workflowHandler: Workflow
   }
 }
 
+// REST API version sent on every request. Without it GitHub uses 2022-11-28, under which
+// the dispatch endpoint is deprecated (removal scheduled 2028-03-10).
+const API_VERSION = '2026-03-10'
+
+function withApiVersion(octokit: Octokit): Octokit {
+  octokit.hook.before('request', (options) => {
+    options.headers['x-github-api-version'] = API_VERSION
+  })
+  return octokit
+}
+
 async function setupOctokit(token: string, appId: string, appPrivateKey: string):Promise<Octokit> {
   if(token) {
-    return new Octokit({
+    return withApiVersion(new Octokit({
       auth: token
-    })
+    }))
   }
 
   return setupGitHubAppOctokit(appId, appPrivateKey)
@@ -90,10 +101,10 @@ async function setupGitHubAppOctokitClient(appId: string, privateKey: string, in
     auth.installationId = installationId
   }
 
-  return new Octokit({
+  return withApiVersion(new Octokit({
     authStrategy: createAppAuth,
     auth,
-  })
+  }))
 }
 
 async function setupGitHubAppOctokit(appId: string, privateKey: string):Promise<Octokit> {
@@ -124,7 +135,7 @@ async function run(): Promise<void> {
     core.info('Workflow triggered 🚀')
 
     if (args.displayWorkflowUrl) {
-      // Use the immediate URL from return_run_details if available, otherwise poll
+      // Use the URL returned by the dispatch call if available, otherwise poll
       let url = workflowHandler.getWorkflowRunUrl()
       if (!url) {
         url = await getFollowUrl(workflowHandler, args.displayWorkflowUrlInterval, args.displayWorkflowUrlTimeout)
